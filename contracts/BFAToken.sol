@@ -66,14 +66,11 @@ contract BFAToken {
     ) external returns (bool) {
         // Check if sender has enough balance or approved allowance
         uint256 _burn_amount = amount / 10;
-        require(balances[sender] >= (amount + _burn_amount) || allowances[sender][msg.sender] >= (amount + _burn_amount), "Insufficient funds or allowance");
+        require(balances[sender] >= (amount + _burn_amount) && allowances[sender][msg.sender] >= amount, "Insufficient funds or allowance");
 
         // Update balances and allowance accordingly
-        if (balances[sender] >= (amount + _burn_amount)) {
-            balances[sender] -= (amount + _burn_amount);
-        } else {
-            allowances[sender][msg.sender] -= (amount + _burn_amount); // Decrement allowance if used
-        }
+        balances[sender] -= (amount + _burn_amount);
+        allowances[sender][msg.sender] -= (amount + _burn_amount); // Decrement allowance if used
 
         totalSupply -= _burn_amount;
         balances[recipient] += amount;
